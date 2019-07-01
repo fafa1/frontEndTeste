@@ -1,35 +1,32 @@
 <template>
-  <div id="app">
-    <div class="overflow-auto">
-    <b-pagination-nav :link-gen="linkGen" :number-of-pages="3" use-router></b-pagination-nav>
-  </div>
-  <b-container class="pagina" id="dista">
-    <b-card
-      v-for="cerveja in cervejas" :key="cerveja.index"
-      id="dist"
-      :per-page="5"
-      :title="cerveja.name"
-      :current-page="1"
-      img-src="https://picsum.photos/600/300/?image=25"
-      img-alt="Image"
-      img-top
-      tag="article"
-      style="max-width: 15rem"
-      class="mb-2">
+  <div>
+    <div>
+      <b-navbar type="dark" fixed="top" variant="dark">
+        <b-navbar-nav>
+          <b-nav-item to="cerveja">Home</b-nav-item>
+          <b-nav-item to="cadastro">Cadastro</b-nav-item>
+          <b-nav-item to="login">Login</b-nav-item>
+        </b-navbar-nav>
+      </b-navbar>
+    </div>
 
-    <b-card-text>
-      <!-- {{ cerveja.description }} -->
-    </b-card-text>
+    <div>
+  <!-- <b-form inline class="search" @submit="onSubmit">
+    <label class="sr-only" for="inline-form-input-name">Pesquisar</label>
+    <b-input
+      v-model="dado"
+      id="inline-form-input-name"
+      class="mb-2 mr-sm-2 mb-sm-0"
+      placeholder="Jane Doe">
+    </b-input>
 
-    <b-button v-b-modal.modal-1>Descrição</b-button>
-  </b-card>
-  
-  <b-modal id="modal-1" title="BootstrapVue">
-    <p class="my-4">Hello from modal!</p>
-  </b-modal>
-
-    <!-- <router-view/> -->
-  </b-container>
+    <b-button type="submit" variant="primary">Search</b-button>
+  </b-form> -->
+</div>
+    
+    <transition name="moveInUp">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -39,43 +36,62 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Cerveja from './services/cervejasApi'
 export default {
   name: 'App',
-  
+
   data() {
     return {
-      cervejas: []
+      dado: null
     }
   },
 
-  mounted () {
-    Cerveja.listar().then(res => {
-      this.cervejas = res.data
-      console.log(this.cervejas)
-    }).catch(err => {
-      console.log(err)
-    })
-
-  },
-
   methods: {
-  },
+
+   onSubmit () {
+     Cerveja.filtarNome(this.dado)
+     console.log(this.dado)
+   } 
+  }
+
 }
 </script>
 
-<style>
- .pagina {
-    margin-top: 70px;
-    padding: 0px;
-    /* justify-content: center; */
-    /* align-items: center; */
-    display: flex;
-    flex-wrap: wrap;
-    /* flex-direction: column; */
- }
- #dist {
-   margin: 10px;
- }
-
+<style lang="scss">
  #app {
+   /* margin: 60px; */
+   align-items: center;
  }
 
+ .search {
+   margin-top: 70px;
+   margin-left: 100px;
+ }
+
+.bg-dark {
+  margin-bottom: 40px
+}
+
+.moveInUp-enter-active {
+  animation: fadeIn 2s ease-in;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50%{
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.moveInUp-leave-active {
+  animation: moveInUp .3s ease-in;
+}
+@keyframes moveInUp {
+ 0% {
+  transform: translateY(0);
+ }
+  100% {
+  transform: translateY(-400px);
+ }
+}
 </style>
